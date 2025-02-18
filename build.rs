@@ -118,9 +118,10 @@ fn main() {
     .define("RANDOM_PREFIX", "opusenc_")
     .define("PACKAGE_NAME", "\"libopusenc\"")
     .define("PACKAGE_VERSION", "\"0.0.0\"")
-    .flag("-O2")
     .flag("-fvisibility=hidden")
+    .flag("-flto")
     .warnings(false)
+    .opt_level(3)
     .out_dir(&build_dir)
     .compile("opusenc");
 

@@ -18,7 +18,7 @@ test:
 
 docs:
 	cargo rustdoc --release --all-features -- -A rustdoc::broken_intra_doc_links
-	echo "<meta http-equiv=\"refresh\" content=\"0;url=libopusenc_sys/index.html\" />" > target/doc/index.html
+	echo "<meta http-equiv=\"refresh\" content=\"0;url=libopusenc_static_sys/index.html\" />" > target/doc/index.html
 
 update:
 	cargo update

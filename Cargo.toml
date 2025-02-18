@@ -1,15 +1,15 @@
 [package]
 edition = "2021"
-name = "libopusenc-sys"
+name = "libopusenc-static-sys"
 version = "1.0.0"
 links = "libopusenc"
 authors = ["Will Hedgecock <will.hedgecock@hedgetech.net>"]
 license = "MIT"
 description = "Rust bindings to the reference Opus Encoder library (libopusenc)"
-documentation = "https://docs.rs/libopusenc-sys/latest/"
+documentation = "https://docs.rs/libopusenc-static-sys/latest/"
 readme = "README.md"
-homepage = "https://github.com/hedgetechllc/libopusenc-sys"
-repository = "https://github.com/hedgetechllc/libopusenc-sys"
+homepage = "https://github.com/hedgetechllc/libopusenc-static-sys"
+repository = "https://github.com/hedgetechllc/libopusenc-static-sys"
 keywords = ["libopusenc", "opus", "libopus", "bindings", "ffi"]
 categories = ["encoding", "external-ffi-bindings", "multimedia::audio", "multimedia::encoding", "no-std"]
 publish = true
@@ -26,7 +26,6 @@ opus-static-sys = { version = "1.0" }
 [build-dependencies]
 bindgen = { version = "0.71" }
 cc = { version = "1.2" }
-cmake = { version = "0.1" }
 yap = { version = "0.12" }
 
 [profile.release]
