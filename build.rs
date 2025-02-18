@@ -1,7 +1,7 @@
 extern crate bindgen;
 extern crate cc;
 
-use std::{env, fs, path::PathBuf};
+use std::{env, fs, path::PathBuf, process::Command};
 
 // TODO: REPLACE ALL OF THIS WITH doxygen-bindgen = { version = "0.1" } ONCE EDITION 2024 IS RELEASED
 use std::error::Error;
@@ -102,7 +102,23 @@ impl bindgen::callbacks::ParseCallbacks for ProcessComments {
 }
 
 fn main() {
+  if cfg!(target_os = "macos") {
+    if let Ok(output) = Command::new("rustc").args(&["--print", "deployment-target"]).output() {
+      if output.status.success() {
+        if let Some(target) = std::str::from_utf8(&output.stdout)
+          .unwrap()
+          .strip_prefix("deployment_target=")
+          .map(|v| v.trim())
+          .map(ToString::to_string)
+        {
+          std::env::set_var("MACOSX_DEPLOYMENT_TARGET", target);
+        }
+      }
+    }
+  }
+  
   let opus_include = PathBuf::from(std::env::var_os("DEP_OPUS_INCLUDE").unwrap()).join("opus");
+  let opus_lib = PathBuf::from(std::env::var_os("DEP_OPUS_LIB").unwrap());
   let dest = PathBuf::from(env::var_os("OUT_DIR").unwrap());
   let build_dir = dest.join("build");
   cc::Build::new()
@@ -117,7 +133,7 @@ fn main() {
     .define("OUTSIDE_SPEEX", "TRUE")
     .define("RANDOM_PREFIX", "opusenc_")
     .define("PACKAGE_NAME", "\"libopusenc\"")
-    .define("PACKAGE_VERSION", "\"0.0.0\"")
+    .define("PACKAGE_VERSION", "\"v0.2.1-16\"")
     .flag("-fvisibility=hidden")
     .flag("-flto")
     .warnings(false)
@@ -129,6 +145,7 @@ fn main() {
   fs::create_dir_all(dest.join("include")).unwrap();
   fs::copy("libopusenc/include/opusenc.h", dest.join("include/opusenc.h")).unwrap();
   fs::copy(build_dir.join("libopusenc.a"), dest.join("lib/libopusenc.a")).unwrap();
+  fs::copy(opus_lib, dest.join("lib/libopus.a")).unwrap();
   fs::write(
     dest.join("lib/pkgconfig/libopusenc.pc"),
     fs::read_to_string("libopusenc/libopusenc.pc.in")
@@ -144,8 +161,11 @@ fn main() {
 
   println!("cargo:root={}", dest.display());
   println!("cargo:include={}/include", dest.display());
+  println!("cargo:lib_path={}/lib", dest.display());
+  println!("cargo:lib={}/lib/libopusenc.a", dest.display());
   println!("cargo:rustc-link-search=native={}/lib", dest.display());
   println!("cargo:rustc-link-lib=static=opusenc");
+  println!("cargo:rustc-link-lib=static=opus");
 
   let bindings = bindgen::Builder::default()
     .use_core()

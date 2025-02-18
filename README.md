@@ -9,6 +9,9 @@ cross-system capability without having to ensure that Opus is installed on the t
 The library is fully `no_std` compatible and represents the minimal amount of overhead
 or glue code needed to utilize `libopusenc` within a Rust project.
 
+Rust documentation can be found [here](https://docs.rs/libopusenc-static-sys/latest), which
+corresponds directly to the `libopusenc` [documentation](https://opus-codec.org/docs/libopusenc_api-0.2/).
+
 ## Building
 
 In order to use this crate, you will need both `cmake` and `clang` installed on your
