@@ -1,0 +1,3 @@
+[submodule "libopusenc"]
+	path = libopusenc
+	url = https://github.com/xiph/libopusenc
